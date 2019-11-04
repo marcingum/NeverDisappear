@@ -26,7 +26,8 @@ public class DisappearPreventer {
   private static final Logger LOGGER = LogManager.getLogger();
 
   public static BlockPos targetPos = new BlockPos(0.5, 70, 0.5);
-  public static Random random = new Random();
+  private static Random random = new Random();
+  private double SCATTER = 2;
 
   void preventDisappear(ItemExpireEvent e) {
     BlockPos oldPosition = e.getEntity().getPosition();
@@ -56,6 +57,11 @@ public class DisappearPreventer {
   private void moveItem(ItemExpireEvent e) {
     e.setCanceled(true);
     e.setExtraLife(1000 * 5);
-    e.getEntity().setPosition(targetPos.getX(), targetPos.up(5).getY(), targetPos.getZ());
+    BlockPos position = getScatteredPosition(targetPos);
+    e.getEntity().setPosition(position.getX(), position.getY(), position.getZ());
+  }
+
+  private BlockPos getScatteredPosition(BlockPos pos) {
+    return new BlockPos(pos.getX() + random.nextGaussian() * SCATTER, pos.up(5).getY(), pos.getZ() + random.nextGaussian() * SCATTER);
   }
 }
